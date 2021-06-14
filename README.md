@@ -17,3 +17,13 @@ Synthetic data can be used to solve this problem. In particular, synthetic data 
 
 ## Dataset
 
+| Dataset | Source | Size |
+| --- | --- | --- |
+| Synthetic | n/a | 27102 |
+| Real | Magana-Mora et al. (2013) | 27102 |
+| Combined | n/a | 27102 |
+| Human |  | 1500 |
+| Human test |  | 200 |
+
+### Synthetic Dataset
+The synthetic dataset, generated via the Python code in file GenerateTIS.py, contains 27102 sequences that are 300 nucleotides long. Each TIS is centrally located in the sequence, on the 150th – 152nd nucleotide. They were generated with the same structure as the real dataset. The dataset is generated with 5 features, adding each feature in a different step (Figure 1). The following sections will discuss each step in detail.
