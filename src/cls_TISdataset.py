@@ -37,9 +37,9 @@ class TISDataset(Dataset):
         # Assign values
         one_hot = np.zeros((len(dna_data), 4))
         for i, nuc in enumerate(dna_data):
-        	number = 1 / len(dna[nuc])
-        	for position in dna[nuc]:
-        		one_hot[i, position] = number
+            number = 1 / len(dna[nuc])
+            for position in dna[nuc]:
+                one_hot[i, position] = number
         # Convert numpy to tensor
         tensor_dna = torch.from_numpy(one_hot).float()
         return tensor_dna, label

@@ -6,9 +6,11 @@ Yunseol Park
 import torch
 import torch.nn as nn
 from func_TISmetrics import Assign
+import numpy as np
 import code
+from time import sleep
 
-def train_model(model, train_data, optimizer, criterion):
+def train_model(model, train_data, optimizer, criterion, batch_size=None):
     """
     Function to train one epoch.
 
@@ -23,6 +25,13 @@ def train_model(model, train_data, optimizer, criterion):
         optimizer.zero_grad()
         output = model(data)
         loss = criterion(output, label)
+        if batch_size:
+            # Use softmax for getting prediction
+            probs = nn.functional.softmax(output, 1)
+            preds = torch.argmax(probs.data, 1)
+            # Calculate total accuracy and loss
+            accuracy = (preds == label).sum().item() / batch_size
+            sleep(5)
         loss.backward()
         optimizer.step()
         #print(loss)
@@ -86,13 +95,14 @@ def test_model(model, test_data, criterion, saliency=None):
             probs = nn.functional.softmax(output, 1)
             preds = torch.argmax(probs.data, 1)
             if saliency != None:
-                code.interact(local = dict(globals(), **locals()))
+                filename = open(saliency+'txt', 'w')
                 prob_write = [i[1] for i in probs.numpy()]
-                label_write = [i for i in label]
-                data_write = [i.numpy() for i in data]
+                label_write = [i for i in label.numpy()]
+                dna = {0:'A', 1:'C', 2:'G', 3:'T'}
+                data_text = [[dna[np.where(j==1)[0][0]] for j in i] for i in data.numpy()]
                 for i in range(len(prob_write)):
                     print(str(prob_write[i])+','+str(label_write[i]), file=filename)
-                    print(data)
+                    print(''.join(data_text[i]), file=filename)
             # Calculate the total accuracy and loss
             total_acc += (preds == label).sum().item()
             #total_acc = total_acc / label.size(0)
@@ -103,6 +113,8 @@ def test_model(model, test_data, criterion, saliency=None):
     # Calculate average accuracy and loss
     loss = total_loss / len(test_data)
     accuracy = total_acc / size
+    if saliency != None:
+        filename.close()
     #proportion = [3, 3, 2, 2]   # For testing only
     return loss, accuracy, proportion
 
